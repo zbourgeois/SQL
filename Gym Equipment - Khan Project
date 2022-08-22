@@ -1,0 +1,25 @@
+CREATE TABLE gym_equipment (id INTEGER PRIMARY KEY, description TEXT, weight INTEGER, price INTEGER, units INTEGER);
+
+INSERT INTO gym_equipment VALUES (1, "bench", 80, 250, 15);
+INSERT INTO gym_equipment VALUES (2, "power rack", 150, 800, 5);
+INSERT INTO gym_equipment VALUES (3, "bike", 200, 1500, 24);
+INSERT INTO gym_equipment VALUES (4, "row", 150, 950, 15);
+INSERT INTO gym_equipment VALUES (5, "barbell", 45, 500, 45);
+INSERT INTO gym_equipment VALUES (6, "dumbell", 65, 5, 90);
+INSERT INTO gym_equipment VALUES (7, "preacher curl", 200, 65, 24);
+INSERT INTO gym_equipment VALUES (8, "cables", 500, 456, 98);
+INSERT INTO gym_equipment VALUES (9, "shoulder press", 65, 123, 65);
+INSERT INTO gym_equipment VALUES (10, "treadmill", 54,498, 415);
+INSERT INTO gym_equipment VALUES (11, "incline bench", 126, 159, 796);
+INSERT INTO gym_equipment VALUES (12, "decline bench", 126, 489, 73);
+INSERT INTO gym_equipment VALUES (13, "stair climber", 847, 898, 45);
+INSERT INTO gym_equipment VALUES (14, "ez curl bar", 25, 89, 49);
+INSERT INTO gym_equipment VALUES (15, "skullcrusher bar", 15, 85, 68);
+
+--display gym equipment ordered by price.
+SELECT
+description,
+weight,
+price
+FROM gym_equipment
+ORDER BY price;
