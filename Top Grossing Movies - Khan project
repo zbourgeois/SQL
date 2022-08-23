@@ -124,6 +124,12 @@ SELECT Title, DomesticPct, OverseasPct
 FROM topmovies
 WHERE DomesticPct > OverseasPct;
 
+--movies that grossed over $500M domestically and $1B overseas
+SELECT Title, Domestic, Overseas
+FROM topmovies
+WHERE Domestic > 500
+AND Overseas > 1000;
+
 --show movies with more than $1 billion worldwide sales
 SELECT Title, Worldwide
 FROM topmovies
@@ -151,3 +157,8 @@ END AS Worldwide_gross
 FROM topmovies
 GROUP BY Worldwide_gross
 ORDER BY Worldwide_gross;
+
+--gross by studio for top 100 grossing movies
+SELECT COUNT(Studio) AS Productions,Studio, SUM(Worldwide * 1000) AS Gross_per_studio
+FROM topmovies
+GROUP BY Studio;
