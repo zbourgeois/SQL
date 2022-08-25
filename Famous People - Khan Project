@@ -1,0 +1,89 @@
+/* Create table about the people and what they do here */
+CREATE TABLE persons (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT,
+    birth_year INTEGER,
+    death_year INTEGER);
+    
+INSERT INTO persons (name, birth_year, death_year) VALUES ("Vincent van Gogh", "1853", "1890");
+INSERT INTO persons (name, birth_year, death_year) VALUES ("Ludwig van Beethoven", "1770", "1827");
+INSERT INTO persons (name, birth_year, death_year) VALUES ("James Cook", "1728", "1779");
+INSERT INTO persons (name, birth_year, death_year) VALUES ("Charles Darwin", "1809", "1882");
+INSERT INTO persons (name, birth_year, death_year) VALUES ("Albert Einstein", "1879", "1955");
+INSERT INTO persons (name, birth_year, death_year) VALUES ("Claude Monet", "1840", "1926");
+INSERT INTO persons (name, birth_year, death_year) VALUES ("Wolfgang Mozart", "1756", "1791");
+INSERT INTO persons (name, birth_year, death_year) VALUES ("Marco Polo", "1254", "1324");
+INSERT INTO persons (name, birth_year, death_year) VALUES ("John Muir", "1838", "1914");
+INSERT INTO persons (name, birth_year, death_year) VALUES ("Isaac Newton", "1643", "1727");
+INSERT INTO persons (name, birth_year, death_year) VALUES ("Charlie Chaplin", "1889", "1977");
+INSERT INTO persons (name, birth_year, death_year) VALUES ("Buster Keaton", "1895", "1966");
+INSERT INTO persons (name, birth_year, death_year) VALUES ("Alfred Hitchcock", "1899", "1980");
+INSERT INTO persons (name, birth_year, death_year) VALUES ("Audrey Hepburn", "1929", "1993");
+INSERT INTO persons (name, birth_year, death_year) VALUES ("Grace Kelly", "1929", "1982");
+
+
+
+CREATE TABLE occupation (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    person_id INTEGER,
+    known_for TEXT);
+
+INSERT INTO occupation (person_id, known_for) VALUES ("1", "painter");
+INSERT INTO occupation (person_id, known_for) VALUES ("6", "painter");
+INSERT INTO occupation (person_id, known_for) VALUES ("2", "composer");
+INSERT INTO occupation (person_id, known_for) VALUES ("7", "composer");
+INSERT INTO occupation (person_id, known_for) VALUES ("3", "explorer");
+INSERT INTO occupation (person_id, known_for) VALUES ("8", "explorer");
+INSERT INTO occupation (person_id, known_for) VALUES ("4", "naturalist");
+INSERT INTO occupation (person_id, known_for) VALUES ("9", "naturalist");
+INSERT INTO occupation (person_id, known_for) VALUES ("5", "physicist");
+INSERT INTO occupation (person_id, known_for) VALUES ("10", "physicist");
+INSERT INTO occupation (person_id, known_for) VALUES ("11", "actor");
+INSERT INTO occupation (person_id, known_for) VALUES ("12", "actor");
+INSERT INTO occupation (person_id, known_for) VALUES ("13", "director");
+INSERT INTO occupation (person_id, known_for) VALUES ("14", "actress");
+INSERT INTO occupation (person_id, known_for) VALUES ("15", "actress");
+
+
+CREATE TABLE location (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    person_id INTEGER,
+    country TEXT);
+
+INSERT INTO location (person_id, country) VALUES ("1", "France");
+INSERT INTO location (person_id, country) VALUES ("2", "Austria");
+INSERT INTO location (person_id, country) VALUES ("3", "England");
+INSERT INTO location (person_id, country) VALUES ("4", "England");
+INSERT INTO location (person_id, country) VALUES ("5", "Germany");
+INSERT INTO location (person_id, country) VALUES ("6", "France");
+INSERT INTO location (person_id, country) VALUES ("7", "Austria");
+INSERT INTO location (person_id, country) VALUES ("8", "Italy");
+INSERT INTO location (person_id, country) VALUES ("9", "Scotland");
+INSERT INTO location (person_id, country) VALUES ("10", "England");
+INSERT INTO location (person_id, country) VALUES ("11", "England");
+INSERT INTO location (person_id, country) VALUES ("12", "United States");
+INSERT INTO location (person_id, country) VALUES ("13", "England");
+INSERT INTO location (person_id, country) VALUES ("14", "England");
+INSERT INTO location (person_id, country) VALUES ("15", "United States");
+
+
+--primary table with information from 3 different tables
+SELECT persons.name, occupation.known_for, location.country, persons.birth_year, persons.death_year
+FROM persons
+JOIN occupation
+ON persons.id = occupation.person_id
+JOIN location
+ON persons.id = location.person_id;
+
+--how many people are from each country
+SELECT COUNT(persons.name) AS famous_people_quantity, location.country
+FROM persons
+JOIN location
+ON persons.id = location.person_id
+GROUP BY location.country;
+
+--age from youngest at death to oldest at death
+SELECT name, SUM(death_year - birth_year) AS age
+FROM persons
+GROUP BY name
+ORDER BY age
