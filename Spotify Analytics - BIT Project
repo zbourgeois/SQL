@@ -1,0 +1,46 @@
+# For this project, I downloaded Spotify data from Kaggle.
+# Then I created a table to insert Spotify data into.
+# Finally, I performed analytics on the data using SQL. 
+
+CREATE TABLE BIT_DB.Spotifydata (
+id integer PRIMARY KEY,
+artist_name varchar NOT NULL,
+track_name varchar NOT NULL,
+track_id varchar NOT NULL,
+popularity integer NOT NULL,
+danceability decimal(4,3) NOT NULL,
+energy decimal(4,3) NOT NULL,
+key integer NOT NULL,
+loudness decimal(5,3) NOT NULL,
+mode integer NOT NULL,
+speechiness decimal(5,4) NOT NULL,
+acousticness decimal(6,5) NOT NULL,
+instrumentalness text NOT NULL,
+liveness decimal(5,4) NOT NULL,
+valence decimal(4,3) NOT NULL,
+tempo decimal(6,3) NOT NULL,
+duration_ms integer NOT NULL,
+time_signature integer NOT NULL 
+);
+
+
+--What songs have a popularity of 90 and higher?
+SELECT artist_name,track_name,popularity
+FROM BIT_DB.Spotifydata
+WHERE popularity > 89
+ORDER BY Popularity DESC;
+
+--What is the average song length?
+SELECT avg(duration_ms)/1000 AS avg_seconds, (avg(duration_ms)/1000)/60 AS avg_minutes
+FROM BIT_DB.Spotifydata;
+
+--How long is the playlist in total?
+SELECT sum(duration_ms)/60000 AS minutes
+FROM BIT_DB.Spotifydata;
+
+--Which artist(s) has the most songs on the playlist?
+SELECT COUNT(artist_name), artist_name
+FROM BIT_DB.Spotifydata
+GROUP BY artist_name
+HAVING COUNT(artist_name) > 1
+ORDER BY COUNT(artist_name) DESC
