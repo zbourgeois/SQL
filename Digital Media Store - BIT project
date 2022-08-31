@@ -1,0 +1,236 @@
+For this project, I was provided a file with 11 tables that represented a digital media store.
+Below are some questions and queries I ran to find the information I wanted.
+
+--How many customers are there?
+SELECT COUNT(CustomerId)
+FROM chinook.customers;
+--59 customers
+
+--What country has the most listeners? Show top 5.
+SELECT COUNT(Country), Country
+FROM chinook.customers
+GROUP BY Country
+ORDER BY COUNT(Country) DESC
+LIMIT 5;
+--1. USA 2. Canada 3. France 4. Brazil 5. Germany
+
+--Show invoices from country with most customers.
+SELECT inv.InvoiceId, inv.InvoiceDate, inv.Total, inv.CustomerId, inv.BillingCountry, cust.Country
+FROM chinook.invoices inv
+JOIN chinook.customers cust
+ON inv.CustomerId=cust.CustomerId
+WHERE cust.Country = 'USA'
+ORDER BY inv.Total DESC;
+
+--What country are the top 10 customers from bases on invoice total?
+SELECT cust.Country, SUM(inv.Total)
+FROM chinook.customers cust
+JOIN chinook.invoices inv
+ON inv.CustomerId=cust.CustomerId
+GROUP BY Country
+ORDER BY SUM(inv.Total) DESC
+LIMIT 10;
+
+--Which customer has the largest invoice total?
+SELECT cust.CustomerId, cust.FirstName, cust.LastName, cust.Country, Max(inv.Total)
+FROM chinook.customers cust
+JOIN chinook.invoices inv
+ON inv.CustomerId=cust.CustomerId;
+--Holy Helena from Czech Republic with $25.86
+
+--Which 10 customers spent the most and how much have they spent?
+SELECT cust.CustomerId, cust.FirstName, cust.LastName, cust.Country, SUM(inv.Total)
+FROM chinook.customers cust
+JOIN chinook.invoices inv
+ON inv.CustomerId=cust.CustomerId
+GROUP BY cust.CustomerId
+ORDER BY SUM(inv.Total) DESC
+LIMIT 10;
+
+--Who are the top 10 most popular artists?
+SELECT COUNT(inv.InvoiceId), artists.Name
+FROM chinook.invoice_items inv
+JOIN chinook.tracks
+ON inv.TrackId=tracks.TrackId
+JOIN chinook.albums
+ON tracks.AlbumId=albums.AlbumId
+JOIN chinook.artists
+ON artists.ArtistId=albums.ArtistId
+GROUP BY artists.name
+ORDER BY COUNT(inv.InvoiceId) DESC
+LIMIT 10;
+
+--What are the 5 most popular genres?
+SELECT COUNT(inv.InvoiceId) AS Purchases, genres.Name AS Genres
+FROM chinook.invoice_items inv
+JOIN chinook.tracks
+ON inv.TrackId=tracks.TrackId
+JOIN chinook.genres
+ON tracks.GenreId=genres.GenreId
+GROUP BY genres.name
+ORDER BY COUNT(inv.InvoiceId) DESC
+LIMIT 5;
+
+--What are the most bought songs?
+SELECT COUNT(inv.InvoiceId), artists.Name, tracks.Name
+FROM chinook.invoice_items inv
+JOIN chinook.tracks
+ON inv.TrackId=tracks.TrackId
+JOIN chinook.albums
+ON tracks.AlbumId=albums.AlbumId
+JOIN chinook.artists
+ON artists.ArtistId=albums.ArtistId
+GROUP BY tracks.name
+ORDER BY COUNT(inv.InvoiceId) DESC
+LIMIT 10;
+
+
+--What are the most bought $1.99 songs?
+SELECT COUNT(inv.InvoiceId), tracks.name, artists.Name, inv.UnitPrice
+FROM chinook.invoice_items inv
+JOIN chinook.tracks
+ON inv.TrackId=tracks.TrackId
+JOIN chinook.albums
+ON tracks.AlbumId=albums.AlbumId
+JOIN chinook.artists
+ON artists.ArtistId=albums.ArtistId
+WHERE inv.UnitPrice > 0.99
+GROUP BY tracks.name
+ORDER BY COUNT(inv.InvoiceId) DESC
+LIMIT 10;
+
+--What sales agent has the most sales?
+SELECT emp.EmployeeId, emp.LastName, emp.FirstName, SUM(inv.Total)
+FROM chinook.employees emp
+JOIN chinook.customers cust
+ON emp.EmployeeId = cust.SupportRepId
+JOIN chinook.invoices inv
+ON inv.CustomerId=cust.CustomerId
+GROUP BY EmployeeId
+ORDER BY SUM(inv.Total) DESC
+LIMIT 1;
+
+--How many songs were purchased?
+SELECT COUNT(InvoiceLineId)
+FROM invoice_items;
+--2,240 songs were purchased
+
+
+
+
+--Metal is my personal favorite genre so this is all for personal interest:
+
+--top metal songs
+SELECT COUNT(inv.InvoiceId) AS Purchases, artists.Name AS Artist, tracks.Name AS Song
+FROM chinook.invoice_items inv
+JOIN chinook.tracks
+ON inv.TrackId=tracks.TrackId
+JOIN chinook.albums
+ON tracks.AlbumId=albums.AlbumId
+JOIN chinook.artists
+ON artists.ArtistId=albums.ArtistId
+WHERE tracks.GenreId='3'
+OR tracks.GenreId='13'
+GROUP BY tracks.Name
+ORDER BY COUNT(inv.InvoiceId) DESC
+LIMIT 10;
+
+--top metal albums
+SELECT COUNT(inv.InvoiceId) AS Purchases, artists.Name AS Artist, albums.Title AS Album
+FROM chinook.invoice_items inv
+JOIN chinook.tracks
+ON inv.TrackId=tracks.TrackId
+JOIN chinook.albums
+ON tracks.AlbumId=albums.AlbumId
+JOIN chinook.artists
+ON artists.ArtistId=albums.ArtistId
+WHERE tracks.GenreId='3'
+OR tracks.GenreId='13'
+GROUP BY albums.Title
+ORDER BY COUNT(inv.InvoiceId) DESC
+LIMIT 10;
+
+--top metal artists
+SELECT COUNT(inv.InvoiceId) AS Purchases, artists.Name AS Artist
+FROM chinook.invoice_items inv
+JOIN chinook.tracks
+ON inv.TrackId=tracks.TrackId
+JOIN chinook.albums
+ON tracks.AlbumId=albums.AlbumId
+JOIN chinook.artists
+ON artists.ArtistId=albums.ArtistId
+WHERE tracks.GenreId='3'
+OR tracks.GenreId='13'
+GROUP BY artists.name
+ORDER BY COUNT(inv.InvoiceId) DESC
+LIMIT 10;
+
+--top metal listeners
+SELECT COUNT(inv.InvoiceId) AS Purchases, cust.FirstName, cust.LastName, cust.Country
+FROM chinook.invoice_items inv
+JOIN chinook.tracks
+ON inv.TrackId=tracks.TrackId
+JOIN chinook.invoices i
+ON inv.InvoiceId=i.InvoiceId
+JOIN chinook.customers cust
+ON i.CustomerId=cust.CustomerId
+WHERE tracks.GenreId='3'
+OR tracks.GenreId='13'
+GROUP BY cust.LastName
+ORDER BY COUNT(inv.InvoiceId) DESC
+LIMIT 10;
+
+
+--top metal listening countries
+SELECT COUNT(inv.InvoiceId) AS Purchases, cust.Country
+FROM chinook.invoice_items inv
+JOIN chinook.tracks
+ON inv.TrackId=tracks.TrackId
+JOIN chinook.invoices i
+ON inv.InvoiceId=i.InvoiceId
+JOIN chinook.customers cust
+ON i.CustomerId=cust.CustomerId
+WHERE tracks.GenreId='3'
+OR tracks.GenreId='13'
+GROUP BY cust.Country
+ORDER BY COUNT(inv.InvoiceId) DESC
+LIMIT 10;
+
+
+--compare metal to most popular genre.
+SELECT COUNT(inv.InvoiceId) AS Purchases, genres.Name AS Genres
+FROM chinook.invoice_items inv
+JOIN chinook.tracks
+ON inv.TrackId=tracks.TrackId
+JOIN chinook.genres
+ON tracks.GenreId=genres.GenreId
+WHERE genres.GenreId='1'
+OR genres.GenreId='3'
+OR genres.GenreId='13'
+GROUP BY genres.name;
+
+
+--show all metal artists
+SELECT artists.Name AS Metal_Artists
+FROM chinook.tracks
+JOIN chinook.albums
+ON tracks.AlbumId=albums.AlbumId
+JOIN chinook.artists
+ON artists.ArtistId=albums.ArtistId
+WHERE tracks.GenreId='3'
+OR tracks.genreID='13'
+GROUP BY artists.Name;
+
+--Metallica's best selling albums
+SELECT COUNT(inv.InvoiceId) AS Purchases, artists.Name AS Artist, albums.Title AS Album
+FROM chinook.invoice_items inv
+JOIN chinook.tracks
+ON inv.TrackId=tracks.TrackId
+JOIN chinook.albums
+ON tracks.AlbumId=albums.AlbumId
+JOIN chinook.artists
+ON artists.ArtistId=albums.ArtistId
+WHERE artists.Name='Metallica'
+GROUP BY albums.Title
+ORDER BY COUNT(inv.InvoiceId) DESC
+--This upsets me a little...
