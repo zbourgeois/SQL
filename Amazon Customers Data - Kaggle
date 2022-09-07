@@ -1,0 +1,69 @@
+Here, I queried the Amazon Customers Data on Kaggle using SQLite
+https://www.kaggle.com/datasets/joychakraborty2000/amazon-customers-data
+
+
+--User with the highest average score
+SELECT MAX(avg_score), UserId, ProfileName
+FROM (SELECT UserId, ProfileName, AVG(Score) AS avg_score
+    FROM Reviews
+    GROUP BY UserId);
+
+--User with the lowest average score.
+SELECT MIN(avg_score), UserId, ProfileName
+FROM (SELECT UserId, ProfileName, AVG(Score) AS avg_score
+    FROM Reviews
+    GROUP BY UserId);
+
+--Product with the highest average score.
+SELECT MAX(avg_score), ProductId
+FROM (SELECT ProductId, AVG(Score) AS avg_score
+    FROM Reviews
+    GROUP BY ProductId);
+
+
+--Product with the most purchases.
+SELECT MAX(count_product) AS AmountSold, ProductId
+FROM (SELECT ProductId, COUNT(ProductId) AS count_product
+    FROM Reviews
+    GROUP BY ProductId);
+
+--User with the most purchases.
+SELECT MAX(count_user) AS Purchases, UserId, ProfileName
+FROM (SELECT UserId, ProfileName, COUNT(UserId) AS count_user
+    FROM Reviews
+    GROUP BY UserId);
+    
+--Top Amazon users based on items purchased
+SELECT COUNT(UserId), UserId, AVG(Score)
+FROM Reviews
+GROUP BY UserId
+Order BY COUNT(UserId) DESC
+LIMIT 20;
+-- User A3TVZM3ZIXG8YW seems very unhappy for someone who bought 199 products.;
+
+--Query user's summaries and text
+SELECT UserId, Summary, Text, Time
+FROM Reviews
+WHERE UserId = 'A3TVZM3ZIXG8YW';
+--It appears they're all the same review
+
+--Distinct reviews for user
+SELECT DISTINCT Summary, COUNT(DISTINCT Summary)
+FROM Reviews
+WHERE UserId = 'A3TVZM3ZIXG8YW';
+--User left the same review 199 times.
+
+--Top users excluding 'A3TVZM3ZIXG8YW'
+SELECT COUNT(UserId), UserId, AVG(Score)
+FROM Reviews
+WHERE UserId NOT LIKE 'A3TVZM3ZIXG8YW'
+GROUP BY UserId
+Order BY COUNT(UserId) DESC
+LIMIT 20;
+
+--See if top user has errors as well
+SELECT DISTINCT Summary, COUNT(DISTINCT Summary) AS dist_sum
+FROM Reviews
+WHERE UserId = 'A3OXHLG6DIBRW8'
+GROUP BY Summary
+ORDER BY dist_sum DESC;
