@@ -1,0 +1,47 @@
+--This is an example of some SQL queries that I use to view monthly costs and inventory.
+--The data queried was downloaded directly from company database.
+
+--How many jobs are open for each customer?
+SELECT DISTINCT customer, COUNT(job) AS open_jobs
+FROM activejobs
+GROUP BY customer
+ORDER BY open_jobs DESC;
+
+-- What are the oldest jobs?
+--Since SQLite does not have a date type, I search by the year first.
+SELECT activejobs.order_date, activejobs.job, costreport.hours, activejobs.description
+FROM activejobs
+JOIN costreport
+ON activejobs.job = costreport.job
+WHERE order_date LIKE '%2021'
+ORDER BY order_date;
+
+-- How many hours have not been billed for? We will review these jobs.
+SELECT activejobs.job, costreport.hours, activejobs.description
+FROM activejobs
+JOIN costreport
+ON activejobs.job = costreport.job
+WHERE hours > 0
+ORDER BY hours DESC;
+
+--How much material and services have not been billed for per job?
+SELECT activejobs.job, costreport.material,costreport.osp, activejobs.description,
+material + osp AS total_cost
+FROM activejobs
+JOIN costreport
+ON activejobs.job = costreport.job
+WHERE total_cost > 0
+ORDER BY total_cost DESC;
+
+--How much material and services have not been billed for total?
+SELECT SUM(material) + SUM(osp) AS open_cost
+FROM activejobs
+JOIN costreport
+ON activejobs.job = costreport.job;
+
+--Open hours and cost by customer
+SELECT SUM(material) + SUM(osp) AS open_cost, SUM(costreport.hours), customer
+FROM activejobs
+JOIN costreport
+ON activejobs.job = costreport.job
+GROUP BY costreport.customer;
