@@ -1,4 +1,3 @@
-.
 
 --PIVOT function
 select *
@@ -19,3 +18,17 @@ SELECT *
 FROM goals_per_season
     UNPIVOT(goals FOR season IN (YEAR_2018 AS '2018', YEAR_2019 AS '2019', YEAR_2020 AS '2020'))
 ORDER BY player DESC
+
+
+
+--REGEXP_LIKE
+---return stores only in the US
+SELECT *
+FROM stores
+WHERE REGEXP_LIKE(physical_address, ' [A-Z]{2} \d{5}');
+
+---return customers named Steven or Stephen
+SELECT *
+FROM customers
+WHERE REGEXP_LIKE(full_name, '^Stephen|Steven');
+
