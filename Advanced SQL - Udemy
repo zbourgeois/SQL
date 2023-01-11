@@ -1,3 +1,4 @@
+SQL Queres for problems provided by the Udemy Advanced SQL Course.
 
 --PIVOT function
 select *
@@ -54,5 +55,5 @@ FROM eba_countries
 
 --return the first word from countries with more than one word
 SELECT name, regexp_substr(name,'^\w+ ')
-FROM eba_countries 
+FROM eba_countries
 
