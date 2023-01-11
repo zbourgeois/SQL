@@ -54,5 +54,5 @@ FROM eba_countries
 
 --return the first word from countries with more than one word
 SELECT name, regexp_substr(name,'^\w+ ')
-FROM eba_countries
+FROM eba_countries 
 
