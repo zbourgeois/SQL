@@ -32,3 +32,27 @@ SELECT *
 FROM customers
 WHERE REGEXP_LIKE(full_name, '^Stephen|Steven');
 
+
+
+--REGEXP_INSTR
+---return the countries with the letter 'n' in the 7th position.
+SELECT name, regexp_instr(name, 'n')
+FROM eba_countries
+WHERE regexp_instr(name,'n')=7
+
+---return the countries with open and closed parentheses.
+SELECT name
+FROM eba_countries
+WHERE  regexp_instr(name,'\(.+\)')>0
+
+
+
+--REGEXP_SUBSTR
+---return the countries beginning and ending with the letter 'A'
+SELECT name, regexp_substr(name,'^A.+a$')
+FROM eba_countries
+
+--return the first word from countries with more than one word
+SELECT name, regexp_substr(name,'^\w+ ')
+FROM eba_countries
+
